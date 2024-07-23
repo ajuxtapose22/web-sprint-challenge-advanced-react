@@ -34,57 +34,63 @@ export default function AppFunctional(props) {
   }
 
   function getNextIndex(direction) {
-    // This helper takes a direction ("left", "up", etc) and calculates what the next index
-    // of the "B" would be. If the move is impossible because we are at the edge of the grid,
-    // this helper should return the current index unchanged.
-      let newIndex;
-      switch (direction) {
-        case 'left':
-          // Calculate new index for moving left
-          newIndex = index - 1;
-          break;
-        case 'right':
-          // Calculate new index for moving right
-          newIndex = index + 1;
-          break;
-        case 'up':
-          // Calculate new index for moving up
-          newIndex = index - 3;
-          break;
-        case 'down':
-          // Calculate new index for moving down
-          newIndex = index + 3;
-          break;
-        default:
-          // If no valid direction, return the current index
-          newIndex = index;
-      }
+    let newIndex;
+    switch (direction) {
+      case 'left':
+        newIndex = index - 1;
+        if (index % 3 === 0) return index 
+        break;
+      case 'right':
+        newIndex = index + 1;
+        if (index % 3 === 2) return index
+        break;
+      case 'up':
+        newIndex = index - 3;
+        if (index < 3) return index
+        break;
+      case 'down':
+        newIndex = index + 3;
+        if (index > 5) return index
+        break;
+      default:
+        newIndex = index
+    }
+    return newIndex
   }
-  
+ 
+    // COORDINATES
+  // (1, 1)=0 (2, 1)=1 (3, 1)=2
+  // (1, 2)=3 (2, 2)=4 (3, 2)=5
+  // (1, 3)=6 (2, 3)=7 (3, 3)=8
+  //  GRID 
+  // (0) (1) (2)
+  // (3) (4) (5)
+  // (6) (7) (8)
 
   function move(evt) {
-    // This event handler can use the helper above to obtain a new index for the "B",
-    // and change any states accordingly.
-
+    const direction = evt.target.id
+    if (direction === 'reset') {
+      reset();
+    } else {
+      const newIndex = getNextIndex(direction)  
+      if (newIndex !== index) {
+        setIndex(newIndex)
+        setSteps(steps + 1)
+      }
+    }
   }
 
   function onChange(evt) {
-    // You will need this to update the value of the input.
     const { value } = evt.target
-    // console.log(value)
     setEmail(value)
-
   }
 
-
   function onSubmit(evt) {
-    // Use a POST request to send a payload to the server.
     evt.preventDefault()
-    // console.log('form submitted')
     const submissionData = {
       steps: steps,
-      y: getXYMessage[index].y,
-      x: getXYMessage[index].x,
+      y: getXY(index).y,
+      x: getXY(index).x,
       email: email
     };
     axios.post('http://localhost:9000/api/result', submissionData)
@@ -95,16 +101,14 @@ export default function AppFunctional(props) {
     })
     .catch(error => {
       console.error("Error Fetching Data", error)
-    });
-  
-   
+    });   
   }
 
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">{getXYMessage()}</h3>
-        <h3 id="steps">You moved 0 times</h3>
+        <h3 id="steps">You moved {steps} times</h3>
       </div>
       <div id="grid">
         {
@@ -119,11 +123,12 @@ export default function AppFunctional(props) {
         <h3 id="message">{ message }</h3>
       </div>
       <div id="keypad">
-        <button id="left">LEFT</button>
-        <button id="up">UP</button>
-        <button id="right">RIGHT</button>
-        <button id="down">DOWN</button>
-        <button id="reset">reset</button>
+        <button id="left" onClick={move}>LEFT</button>
+        <button id="up" onClick={move}>UP</button>
+        <button id="right" onClick={move}>RIGHT</button>
+        <button id="down" onClick={move}>DOWN</button>
+        <button id="reset" onClick={move}>reset</button>
+       
       </div>
       <form onSubmit={onSubmit}>
         <input onChange={onChange} value={email} id="email" name="email" type="email" placeholder="type email"></input>
