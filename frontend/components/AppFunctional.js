@@ -11,28 +11,34 @@ const initialIndex = 4 // the index the "B" is at
 export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
-  const [message, setMessage] = useState()
-  const [email, setEmail] = useState()
-  const [steps, setSteps] = useState()
-  const [index, setIndex] = useState()
+  const [message, setMessage] = useState(initialMessage)
+  const [email, setEmail] = useState(initialEmail)
+  const [steps, setSteps] = useState(initialSteps)
+  const [index, setIndex] = useState(initialIndex)
 
 
-  function getXY() {
+  function getXY(index) {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
+    
+    let x = index % 3 + 1;
+    let y = Math.floor(index / 3) + 1;
+    
+    return { x, y }
   }
 
   function getXYMessage() {
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
+
   }
 
   function reset() {
     // Use this helper to reset all states to their initial values.
     setEmail(initialEmail)
     setIndex(initialIndex)
-    setMessage(setMessage)
+    setMessage(initialMessage)
     setSteps(initialSteps)
   }
 
@@ -49,7 +55,10 @@ export default function AppFunctional(props) {
 
   function onChange(evt) {
     // You will need this to update the value of the input.
-    setEmail()
+    const { value } = evt.target
+    // console.log(value)
+    setEmail(value)
+
   }
 
 
@@ -65,13 +74,16 @@ export default function AppFunctional(props) {
     };
     axios.post('http://localhost:9000/api/result', submissionData)
     .then(response => {
-      // console.log("Data Submitted", response.data)
+      let res = response.data.message
+      let newMessage = res.split(".").join('')
+      setMessage(newMessage)
     })
     .catch(error => {
-      // console.error("Error Fetching Data", error)
+      console.error("Error Fetching Data", error)
     });
+  
+   
   }
-  console.log(email)
 
   return (
     <div id="wrapper" className={props.className}>
@@ -89,7 +101,7 @@ export default function AppFunctional(props) {
         }
       </div>
       <div className="info">
-        <h3 id="message"></h3>
+        <h3 id="message">{ message }</h3>
       </div>
       <div id="keypad">
         <button id="left">LEFT</button>
@@ -99,7 +111,7 @@ export default function AppFunctional(props) {
         <button id="reset">reset</button>
       </div>
       <form onSubmit={onSubmit}>
-        <input onChange={onChange} id="email" name="email" type="email" placeholder="type email"></input>
+        <input onChange={onChange} value={email} id="email" name="email" type="email" placeholder="type email"></input>
         <input id="submit" type="submit" ></input>
       </form >
     </div>
