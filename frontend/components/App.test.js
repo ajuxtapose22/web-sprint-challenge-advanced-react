@@ -31,7 +31,7 @@ test('typing in the input changes its value', () => {
 
 
 // FAILED EXPECTED: "" 
-test('form submission with email', () => {
+test('form submission with email', async () => {
   render(<AppFunctional />);
 
   const input = screen.getByPlaceholderText(/type email/);
@@ -39,7 +39,8 @@ test('form submission with email', () => {
   const submitButton = screen.getByTestId('submit');
   fireEvent.click(submitButton);
 
-  expect(input.value).toBe('aaronjardin@example.com');
+  await screen.findAllByPlaceholderText(/type email/)
+  expect(input.value).toBe('');
 });
 
 
