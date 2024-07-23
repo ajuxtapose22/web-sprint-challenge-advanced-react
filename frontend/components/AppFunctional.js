@@ -9,8 +9,6 @@ const initialSteps = 0
 const initialIndex = 4 // the index the "B" is at
 
 export default function AppFunctional(props) {
-  // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
-  // You can delete them and build your own logic from scratch.
   const [message, setMessage] = useState(initialMessage)
   const [email, setEmail] = useState(initialEmail)
   const [steps, setSteps] = useState(initialSteps)
@@ -18,24 +16,17 @@ export default function AppFunctional(props) {
 
 
   function getXY(index) {
-    // It it not necessary to have a state to track the coordinates.
-    // It's enough to know what index the "B" is at, to be able to calculate them.
-    
-    let x = index % 3 + 1;
-    let y = Math.floor(index / 3) + 1;
-    
+    const x = index % 3 + 1;
+    const y = Math.floor(index / 3) + 1;
     return { x, y }
   }
-
+ 
   function getXYMessage() {
-    // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
-    // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
-    // returns the fully constructed string.
-
+    const { x, y } = getXY(index)
+    return `Coordinates (${x}, ${y})`
   }
 
   function reset() {
-    // Use this helper to reset all states to their initial values.
     setEmail(initialEmail)
     setIndex(initialIndex)
     setMessage(initialMessage)
@@ -46,11 +37,35 @@ export default function AppFunctional(props) {
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
+      let newIndex;
+      switch (direction) {
+        case 'left':
+          // Calculate new index for moving left
+          newIndex = index - 1;
+          break;
+        case 'right':
+          // Calculate new index for moving right
+          newIndex = index + 1;
+          break;
+        case 'up':
+          // Calculate new index for moving up
+          newIndex = index - 3;
+          break;
+        case 'down':
+          // Calculate new index for moving down
+          newIndex = index + 3;
+          break;
+        default:
+          // If no valid direction, return the current index
+          newIndex = index;
+      }
   }
+  
 
   function move(evt) {
     // This event handler can use the helper above to obtain a new index for the "B",
     // and change any states accordingly.
+
   }
 
   function onChange(evt) {
@@ -67,10 +82,10 @@ export default function AppFunctional(props) {
     evt.preventDefault()
     // console.log('form submitted')
     const submissionData = {
-      steps: 0,
-      y: 2,
-      x: 2,
-      email: 'aaron.jardin@yahoo.com'
+      steps: steps,
+      y: getXYMessage[index].y,
+      x: getXYMessage[index].x,
+      email: email
     };
     axios.post('http://localhost:9000/api/result', submissionData)
     .then(response => {
@@ -88,7 +103,7 @@ export default function AppFunctional(props) {
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
-        <h3 id="coordinates">Coordinates (2, 2)</h3>
+        <h3 id="coordinates">{getXYMessage()}</h3>
         <h3 id="steps">You moved 0 times</h3>
       </div>
       <div id="grid">
