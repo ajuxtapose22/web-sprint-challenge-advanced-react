@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
+import axios from 'axios';
+
 
 // Suggested initial states
 const initialMessage = ''
@@ -9,6 +11,11 @@ const initialIndex = 4 // the index the "B" is at
 export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
+  const [message, setMessage] = useState()
+  const [email, setEmail] = useState()
+  const [steps, setSteps] = useState()
+  const [index, setIndex] = useState()
+
 
   function getXY() {
     // It it not necessary to have a state to track the coordinates.
@@ -23,6 +30,10 @@ export default function AppFunctional(props) {
 
   function reset() {
     // Use this helper to reset all states to their initial values.
+    setEmail(initialEmail)
+    setIndex(initialIndex)
+    setMessage(setMessage)
+    setSteps(initialSteps)
   }
 
   function getNextIndex(direction) {
@@ -38,11 +49,29 @@ export default function AppFunctional(props) {
 
   function onChange(evt) {
     // You will need this to update the value of the input.
+    setEmail()
   }
+
 
   function onSubmit(evt) {
     // Use a POST request to send a payload to the server.
+    evt.preventDefault()
+    // console.log('form submitted')
+    const submissionData = {
+      steps: 0,
+      y: 2,
+      x: 2,
+      email: 'aaron.jardin@yahoo.com'
+    };
+    axios.post('http://localhost:9000/api/result', submissionData)
+    .then(response => {
+      // console.log("Data Submitted", response.data)
+    })
+    .catch(error => {
+      // console.error("Error Fetching Data", error)
+    });
   }
+  console.log(email)
 
   return (
     <div id="wrapper" className={props.className}>
@@ -69,10 +98,10 @@ export default function AppFunctional(props) {
         <button id="down">DOWN</button>
         <button id="reset">reset</button>
       </div>
-      <form>
-        <input id="email" type="email" placeholder="type email"></input>
-        <input id="submit" type="submit"></input>
-      </form>
+      <form onSubmit={onSubmit}>
+        <input onChange={onChange} id="email" name="email" type="email" placeholder="type email"></input>
+        <input id="submit" type="submit" ></input>
+      </form >
     </div>
   )
 }

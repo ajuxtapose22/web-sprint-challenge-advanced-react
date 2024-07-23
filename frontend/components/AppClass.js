@@ -75,7 +75,7 @@ export default class AppClass extends React.Component {
         <div className="info">
           <h3 id="message"></h3>
         </div>
-        <div id="keypad">
+        <div  id="keypad">
           <button id="left">LEFT</button>
           <button id="up">UP</button>
           <button id="right">RIGHT</button>
