@@ -38,20 +38,28 @@ export default function AppFunctional(props) {
     switch (direction) {
       case 'left':
         newIndex = index - 1;
-        if (index % 3 === 0) return index 
-        break;
+        if (index % 3 === 0) throw new Error("You can't go left");
+         newIndex = index - 1;
+         break;
+
       case 'right':
         newIndex = index + 1;
-        if (index % 3 === 2) return index
-        break;
+        if (index % 3 === 2) throw new Error("You can't go right");
+         newIndex = index + 1;
+         break;
+
       case 'up':
-        newIndex = index - 3;
-        if (index < 3) return index
-        break;
+        newIndex = index - 3; 
+        if (index < 3) throw new Error("You can't go up");
+         newIndex = index - 3;
+         break;
+
       case 'down':
         newIndex = index + 3;
-        if (index > 5) return index
+        if (index > 5) throw new Error("You can't go down");
+          newIndex = index + 3;
         break;
+
       default:
         newIndex = index
     }
@@ -72,12 +80,17 @@ export default function AppFunctional(props) {
     if (direction === 'reset') {
       reset();
     } else {
+      try {
       const newIndex = getNextIndex(direction)  
       if (newIndex !== index) {
         setIndex(newIndex)
         setSteps(steps + 1)
+        setMessage('')
       }
+    } catch (error) {
+      setMessage(error.message)
     }
+  }
   }
 
   function onChange(evt) {
@@ -98,6 +111,7 @@ export default function AppFunctional(props) {
       let res = response.data.message
       let newMessage = res.split(".").join('')
       setMessage(newMessage)
+      setEmail(initialEmail)
     })
     .catch(error => {
       console.error("Error Fetching Data", error)
@@ -108,7 +122,7 @@ export default function AppFunctional(props) {
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">{getXYMessage()}</h3>
-        <h3 id="steps">You moved {steps} times</h3>
+        <h3 id="steps">You moved {steps} {steps > 1 ? 'times' : 'time'}</h3>
       </div>
       <div id="grid">
         {
@@ -132,7 +146,7 @@ export default function AppFunctional(props) {
       </div>
       <form onSubmit={onSubmit}>
         <input onChange={onChange} value={email} id="email" name="email" type="email" placeholder="type email"></input>
-        <input id="submit" type="submit" ></input>
+        <input data-testid="submit" id="submit" type="submit" ></input>
       </form >
     </div>
   )
