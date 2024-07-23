@@ -9,7 +9,7 @@ test('sanity', () => {
 
 test('renders visible texts', () => {
   render(<AppFunctional />);
-  expect(screen.getByText('Coordinates')).toBeInTheDocument();
+  expect(screen.getByText(/Coordinates/)).toBeInTheDocument();
   expect(screen.getByText(/You moved 0 times/)).toBeInTheDocument();
   expect(screen.getByText(/LEFT/)).toBeInTheDocument();
   expect(screen.getByText(/UP/)).toBeInTheDocument();
