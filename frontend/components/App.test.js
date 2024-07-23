@@ -29,6 +29,8 @@ test('typing in the input changes its value', () => {
   expect(input.value).toBe('test@tester.com');
 });
 
+
+
 test('form submission with email', () => {
   render(<AppFunctional />);
 
@@ -39,6 +41,9 @@ test('form submission with email', () => {
 
   expect(input.value).toBe('');
 });
+
+
+
 
 test('B is in the correct initial position', () => {
   render(<AppFunctional />);

@@ -112,9 +112,10 @@ export default function AppFunctional(props) {
       let newMessage = res.split(".").join('')
       setMessage(newMessage)
       setEmail(initialEmail)
+      
     })
     .catch(error => {
-      console.error("Error Fetching Data", error)
+      setMessage(error.response.data.message)
     });   
   }
 
@@ -142,7 +143,6 @@ export default function AppFunctional(props) {
         <button id="right" onClick={move}>RIGHT</button>
         <button id="down" onClick={move}>DOWN</button>
         <button id="reset" onClick={move}>reset</button>
-       
       </div>
       <form onSubmit={onSubmit}>
         <input onChange={onChange} value={email} id="email" name="email" type="email" placeholder="type email"></input>
